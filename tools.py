@@ -1,5 +1,4 @@
-import json
-from dataclasses import asdict, dataclass, field, is_dataclass
+from dataclasses import dataclass, field
 from random import randint
 
 maps = [
@@ -13,14 +12,7 @@ maps = [
 ]
 
 
-class JsonDataclass(json.JSONEncoder):
-    def default(self, o):
-        if is_dataclass(o):
-            return asdict(o)
-        return super().default(o)
-
-
-@dataclass
+@dataclass(frozen=True)
 class Defaultsettings:
     """Sets basic match information. You can override the number of maps, first veto and knife round."""
 
@@ -41,27 +33,28 @@ class Defaultsettings:
     side_type: str = field(
         default="standard"
     )  # standard is valve BO3, always/never knife for knife rounds
+    spectators: dict = field(default_factory=dict)
 
 
-# @dataclass
-# class Matchinfo:
-#     """arrays of teams, spectators, maps"""
+@dataclass(frozen=True)
+class Matchinfo:
+    """arrays of teams, spectators, maps"""
 
-#     spectators: dict = field
-#     maplist: list = field(default=maps)
-#     team1: dict = field
-#     team2: dict = field
-#     cvars: dict = field(default={"hostname": f"{team1} vs {team2}"})
+    maplist: list[str] = field(
+        default_factory=list
+    )  # List of maps to be passed in the main script. Defaults to current Active Duty
+    team1: dict = field(default_factory=dict)  # Initialize empty team 1 dict
+    team2: dict = field(default_factory=dict)  # Initialize empty team 2 dict
+    cvars: dict = field(default_factory=dict)  # Adds cvars - server name
 
 
-@dataclass
+@dataclass(frozen=True)
 class Teaminfo:
-    pass
-
-
-@dataclass
-class Playerinfo:
-    pass
+    name: str
+    tag: str
+    flag: str = field(default="SI")
+    logo: str = field(default="")
+    players: list[str] = field(default_factory=list)
 
 
 if __name__ == "__main__":
