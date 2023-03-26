@@ -6,16 +6,27 @@ from dataclasses import asdict
 from tools import Defaultsettings, Matchinfo, Teaminfo, maps
 
 
-def showteams():
-    pass
+def showteams() -> list:  # shows available teams
+    teamfiles = os.path.abspath(os.path.dirname(__file__)) + "\\teams"
+    teams = os.listdir(teamfiles)
+    teams = [os.path.splitext(x)[0] for x in teams]  # strip extension
+    print("Avaliable teams:")
+    print(*teams, sep="\n")  # prints 1 team per line
+    return teams  # returns the list for future use in other functions
 
 
-def deleteteam():
-    pass
+def deleteteam() -> None:  # delete a team
+    showteams()
+    teamfiles = os.path.abspath(os.path.dirname(__file__)) + "\\teams"
+    removeteam = input("Enter name of team to remove: ")
+    if removeteam in showteams():
+        os.remove(teamfiles + f"\\{removeteam}.json")  # removes team json file
+    else:
+        print("Invalid team name. Aborting")
+        quit()
 
 
-def addteam() -> dict:  # Add a team json file
-    """Creates a team and saves it as a json file in the teams folder."""
+def addteam() -> None:  # Add a team json file and save it in the teams folder
     try:
         file_path = os.path.abspath(os.path.dirname(__file__))  # Get default file path
         os.mkdir(f"{file_path}/teams")  # Create folder teams
@@ -35,7 +46,7 @@ def addteam() -> dict:  # Add a team json file
                 playerno = playerno + 1
             else:  # Add sub if required
                 subcheck = input("Type 'yes' if you wish to add a sub: ")
-                if "yes" in subcheck.lower():
+                if "yes" in subcheck.lower():  # checks if yes was entered
                     steamid = input("Enter SteamID for substitute: ")
                     player.append(steamid)
                 else:
@@ -47,26 +58,26 @@ def addteam() -> dict:  # Add a team json file
 
 
 def writematchfile():
-    teamfiles = os.path.abspath(os.path.dirname(__file__)) + "\\teams"
-    teams = os.listdir(teamfiles)
-    teams = [os.path.splitext(x)[0] for x in teams]
+    specs = {
+        "players": input("Insert spectator SteamID: ")
+    }  # players that can join GOTV
+    showteams()
     teamno = 1
-    print("Avaliable teams:")
-    print(*teams, sep="\n")
     filename = str(Defaultsettings.matchid) + ".json"
-    specs = {"players": input("Insert spectator SteamID: ")}
     data1 = asdict(Defaultsettings(spectators=specs))
     teamdata = []
-    for _ in range(2):
-        selection = input(f"Enter name of team {teamno}: ")
-        while selection not in teams:
-            print("Team name does not exist. Restarting")
-            writematchfile()
-        print(f"Team {teamno}: {selection}")
+    for _ in range(2):  # To select two teams
+        selection = input(f"Enter name of team number {teamno}: ")
+        while selection not in showteams():
+            print("Team name does not exist. Aborting")
+            quit()
+        print(
+            f"Selected as team {teamno}: {selection}"
+        )  # prints which team was selected as which
         teamno = teamno + 1
-        teamfile = "teams\\" + selection + ".json"
+        teamfile = "teams\\" + selection + ".json"  # get the team file
         with open(teamfile, "r") as teamjson:
-            teamdata.append(json.loads(teamjson.read()))
+            teamdata.append(json.loads(teamjson.read()))  # append the data to list
     teamdata1 = teamdata[0]
     teamdata2 = teamdata[1]
     defhostname = {"hostname": f"{teamdata1['name']} vs {teamdata2['name']}"}
@@ -77,10 +88,10 @@ def writematchfile():
             team2=dict(teamdata2),
             cvars=defhostname,
         )
-    )
-    data = [data1, data2]
+    )  # Sets map, teams and hostname parameters
+    data = [data1, data2]  # create list from both two separate dicts
     with open(filename, "x") as matchjson:
-        matchjson.write(json.dumps(data, indent=4))
+        matchjson.write(json.dumps(data, indent=4))  # create json from list of dicts
     print(f"Match file {filename} generated")
 
 
