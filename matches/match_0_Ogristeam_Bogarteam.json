@@ -1,0 +1,43 @@
+{
+    "matchid": 0,
+    "team1": {
+        "name": "Ogristeam",
+        "players": {
+            "76561197980997892": "Ogris",
+            "76561198010511021": "gla1ve",
+            "76561197979669175": "K0nfig",
+            "76561198028458803": "BlameF",
+            "76561198024248129": "farlig"
+        }
+    },
+    "team2": {
+        "name": "Bogarteam",
+        "players": {
+            "76561198129898472": "Bogar",
+            "76561198044045107": "electronic",
+            "76561198246607476": "b1t",
+            "76561198121220486": "Perfecto",
+            "76561198040577200": "sdy"
+        }
+    },
+    "num_maps": 1,
+    "maplist": [
+        "de_mirage",
+        "de_overpass",
+        "de_inferno",
+        "de_train",
+        "de_nuke",
+        "de_ancient",
+        "de_overpass"
+    ],
+    "spectators": {
+        "players": {
+            "76561198015560450": "EPICENTER 2025 Observer"
+        }
+    },
+    "clinch_series": "true",
+    "players_per_team": 5,
+    "cvars": {
+        "hostname": "EPICENTER Lan 2025: Ogristeam vs Bogarteam"
+    }
+}
